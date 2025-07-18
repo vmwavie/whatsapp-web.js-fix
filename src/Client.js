@@ -1040,6 +1040,10 @@ class Client extends EventEmitter {
                 ? window.WWebJS.getMessageModel(msg)
                 : undefined;
         }, chatId, content, internalOptions, sendSeen);
+      
+        if (chatId === this.info.wid._serialized && sentMsg) {
+          await this.sendSeen(chatId);
+        }
 
         return sentMsg
             ? new Message(this, sentMsg)
