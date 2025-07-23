@@ -17,7 +17,9 @@ exports.LoadUtils = () => {
     window.WWebJS.sendSeen = async (chatId) => {
       let chat = window.Store.Chat.get(chatId);
       if (chat !== undefined) {
-          try {
+        try {
+            window.Store.WAWebStreamModel.Stream.markAvailable();
+
               const streamAvailable = window.Store.Stream ? 
                   (window.Store.Stream.available !== false) : 
                   (window.Store.Conn && window.Store.Conn.state === 'CONNECTED');
