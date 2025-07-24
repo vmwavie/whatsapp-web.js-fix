@@ -18,7 +18,7 @@ exports.LoadUtils = () => {
       let chat = window.Store.Chat.get(chatId);
       if (chat !== undefined) {
         try {
-            // window.Store.WAWebStreamModel.Stream.markAvailable();
+            window.Store.WAWebStreamModel.Stream.markAvailable();
 
               const streamAvailable = window.Store.Stream ? 
                   (window.Store.Stream.available !== false) : 
