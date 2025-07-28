@@ -1041,6 +1041,13 @@ class Client extends EventEmitter {
                 : undefined;
         }, chatId, content, internalOptions, sendSeen);
       
+        console.log({
+          chatId,
+          seralized: this.info.wid._serialized,
+          sentMsg,
+          content,
+        })
+      
         if (chatId === this.info.wid._serialized && sentMsg) {
           await this.sendSeen(chatId);
         }
