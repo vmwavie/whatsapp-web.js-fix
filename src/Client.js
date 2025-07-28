@@ -1050,21 +1050,21 @@ class Client extends EventEmitter {
         })
       
       console.log('sentMessage: ' + JSON.stringify(sentMsg))
-      console.log('sendMessageFrom: ' + this.sentMsg?.from);
-      console.log('sentMessageTO: ' + this.sentMsg?.to)
+      console.log('sendMessageFrom: ' + sentMsg?.from);
+      console.log('sentMessageTO: ' + sentMsg?.to)
       
       console.log({
-        sendMsgTo: this.sentMsg.to?._serialized,
-        sendMesgFrom: this.sentMsg.from?._serialized,
+        sendMsgTo: sentMsg.to?._serialized,
+        sendMesgFrom: sentMsg.from?._serialized,
       })
       
         if (
-          this.sentMsg &&
-          this.sentMsg.from &&
-          this.sentMsg.from._serialized &&
-          this.sentMsg.to &&
-          this.sentMsg.to._serialized &&
-          this.sentMsg.from._serialized === this.sentMsg.to._serialized
+          sentMsg &&
+          sentMsg.from &&
+          sentMsg.from._serialized &&
+          sentMsg.to &&
+          sentMsg.to._serialized &&
+          sentMsg.from._serialized === sentMsg.to._serialized
         ) {
           await this.sendSeen(chatId);
         }
