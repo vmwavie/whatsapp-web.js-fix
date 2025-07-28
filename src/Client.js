@@ -820,7 +820,8 @@ class Client extends EventEmitter {
    * @param {string} chatId
    * @returns {Promise<boolean>} result
    */
-    async sendSeen(chatId) {
+  async sendSeen(chatId) {
+      console.log('caiu no send seen ' + chatId)
       const result = await this.pupPage.evaluate(async (chatId) => {
           try {
               const chat = window.Store.Chat.get(chatId);
