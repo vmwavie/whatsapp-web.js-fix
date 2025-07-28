@@ -1049,7 +1049,9 @@ class Client extends EventEmitter {
           content,
         })
       
-      console.log('sentMessage: ' + sentMsg)
+      console.log('sentMessage: ' + JSON.stringify(sentMsg))
+      console.log('sendMessageFrom: ' + this.sentMsg?.from);
+      console.log('sentMessageTO: ' + this.sentMsg?.to)
       
       console.log({
         sendMsgTo: this.sentMsg.to?._serialized,
