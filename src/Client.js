@@ -1048,7 +1048,14 @@ class Client extends EventEmitter {
           content,
         })
       
-        if (chatId === this.info.wid._serialized && sentMsg) {
+        if (
+          this.sentMsg &&
+          this.sentMsg.from &&
+          this.sentMsg.from._serialized &&
+          this.sentMsg.to &&
+          this.sentMsg.to._serialized &&
+          this.sentMsg.from._serialized === this.sentMsg.to._serialized
+        ) {
           await this.sendSeen(chatId);
         }
 
