@@ -813,90 +813,90 @@ class Client extends EventEmitter {
         });
     }
 
-  /**
+    /**
    * Mark as seen for the Chat - Implements dual confirmation system discovered through code analysis
    * Executes both read confirmation (seen) and delivery confirmation (receipt) in parallel
    * following the Promise.all([sendSeenMessages, sendReceiptMessages]) pattern from obfuscated code
    * @param {string} chatId
    * @returns {Promise<boolean>} result
    */
-  async sendSeen(chatId) {
-      console.log('caiu no send seen ' + chatId)
-      const result = await this.pupPage.evaluate(async (chatId) => {
-          try {
-              const chat = window.Store.Chat.get(chatId);
-              if (!chat) {
-                  return false;
-              }
+    async sendSeen(chatId) {
+        console.log('caiu no send seen ' + chatId);
+        const result = await this.pupPage.evaluate(async (chatId) => {
+            try {
+                const chat = window.Store.Chat.get(chatId);
+                if (!chat) {
+                    return false;
+                }
   
-              const streamAvailable = window.Store.Stream ? 
-                  (window.Store.Stream.available !== false) : 
-                  (window.Store.Conn && window.Store.Conn.state === 'CONNECTED');
+                const streamAvailable = window.Store.Stream ? 
+                    (window.Store.Stream.available !== false) : 
+                    (window.Store.Conn && window.Store.Conn.state === 'CONNECTED');
   
-              if (!streamAvailable) {
-                  console.warn('Stream not available, attempting fallback sendSeen');
-                  try {
-                      return await window.WWebJS.sendSeen(chatId);
-                  } catch (fallbackError) {
-                      console.error('Fallback sendSeen failed:', fallbackError);
-                      return false;
-                  }
-              }
+                if (!streamAvailable) {
+                    console.warn('Stream not available, attempting fallback sendSeen');
+                    try {
+                        return await window.WWebJS.sendSeen(chatId);
+                    } catch (fallbackError) {
+                        console.error('Fallback sendSeen failed:', fallbackError);
+                        return false;
+                    }
+                }
   
-              const parallelOperations = [];
+                const parallelOperations = [];
   
-              parallelOperations.push(
-                  window.WWebJS.sendSeen(chatId)
-              );
+                parallelOperations.push(
+                    window.WWebJS.sendSeen(chatId)
+                );
   
-              if (window.Store.SendReceipt && window.Store.SendReceipt.sendAggregateReceipts) {
-                  parallelOperations.push(
-                      window.Store.SendReceipt.sendAggregateReceipts({
-                          type: window.Store.SendReceipt.RECEIPT_TYPE?.READ || 'read',
-                          chatId: chatId
-                      }).catch(err => {
-                          console.warn('SendReceipt operation failed:', err);
-                          return true;
-                      })
-                  );
-              } else if (window.Store.MessageReceiptBatcher && window.Store.MessageReceiptBatcher.receiptBatcher) {
-                  parallelOperations.push(
-                      Promise.resolve().then(() => {
-                          try {
-                              return window.Store.MessageReceiptBatcher.receiptBatcher.acceptOtherReceipt({
-                                  chatId: chatId,
-                                  type: 'read'
-                              });
-                          } catch (err) {
-                              console.warn('MessageReceiptBatcher operation failed:', err);
-                              return true;
-                          }
-                      })
-                  );
-              }
+                if (window.Store.SendReceipt && window.Store.SendReceipt.sendAggregateReceipts) {
+                    parallelOperations.push(
+                        window.Store.SendReceipt.sendAggregateReceipts({
+                            type: window.Store.SendReceipt.RECEIPT_TYPE?.READ || 'read',
+                            chatId: chatId
+                        }).catch(err => {
+                            console.warn('SendReceipt operation failed:', err);
+                            return true;
+                        })
+                    );
+                } else if (window.Store.MessageReceiptBatcher && window.Store.MessageReceiptBatcher.receiptBatcher) {
+                    parallelOperations.push(
+                        Promise.resolve().then(() => {
+                            try {
+                                return window.Store.MessageReceiptBatcher.receiptBatcher.acceptOtherReceipt({
+                                    chatId: chatId,
+                                    type: 'read'
+                                });
+                            } catch (err) {
+                                console.warn('MessageReceiptBatcher operation failed:', err);
+                                return true;
+                            }
+                        })
+                    );
+                }
 
-              if (parallelOperations.length > 1) {
-                  await Promise.all(parallelOperations);
-              } else {
-                  await parallelOperations[0];
-              }
+                if (parallelOperations.length > 1) {
+                    await Promise.all(parallelOperations);
+                } else {
+                    await parallelOperations[0];
+                }
   
-              return true;
+                return true;
   
-          } catch (error) {
-              console.error('Error in dual sendSeen operation:', error);
+            } catch (error) {
+                console.error('Error in dual sendSeen operation:', error);
               
-              try {
-                  return await window.WWebJS.sendSeen(chatId);
-              } catch (fallbackError) {
-                  console.error('Fallback sendSeen also failed:', fallbackError);
-                  return false;
-              }
-          }
-      }, chatId);
+                try {
+                    return await window.WWebJS.sendSeen(chatId);
+                } catch (fallbackError) {
+                    console.error('Fallback sendSeen also failed:', fallbackError);
+                    return false;
+                }
+            }
+        }, chatId);
       
-      return result;
-  }
+        return result;
+    }
 
     /**
      * An object representing mentions of groups
@@ -939,12 +939,8 @@ class Client extends EventEmitter {
      * @returns {Promise<Message>} Message that was just sent
      */
     async sendMessage(chatId, content, options = {}) {
-      const isChannel = /@\w*newsletter\b/.test(chatId);
-      
-        if (chatId === this.info.wid._serialized) {
-          await this.sendSeen(chatId);
-        }
-
+        const isChannel = /@\w*newsletter\b/.test(chatId);
+    
         if (isChannel && [
             options.sendMediaAsDocument, options.quotedMessageId, 
             options.parseVCards, options.isViewOnce,
@@ -1043,30 +1039,30 @@ class Client extends EventEmitter {
         }, chatId, content, internalOptions, sendSeen);
       
         console.log({
-          chatId,
-          seralized: this.info.wid._serialized,
-          sentMsg,
-          content,
-        })
+            chatId,
+            seralized: this.info.wid._serialized,
+            sentMsg,
+            content,
+        });
       
-      console.log('sentMessage: ' + JSON.stringify(sentMsg))
-      console.log('sendMessageFrom: ' + sentMsg?.from);
-      console.log('sentMessageTO: ' + sentMsg?.to)
+        console.log('sentMessage: ' + JSON.stringify(sentMsg));
+        console.log('sendMessageFrom: ' + sentMsg?.from);
+        console.log('sentMessageTO: ' + sentMsg?.to);
       
-      console.log({
-        sendMsgTo: sentMsg.to?._serialized,
-        sendMesgFrom: sentMsg.from?._serialized,
-      })
+        console.log({
+            sendMsgTo: sentMsg.to?._serialized,
+            sendMesgFrom: sentMsg.from?._serialized,
+        });
       
         if (
-          sentMsg &&
+            sentMsg &&
           sentMsg.from &&
           sentMsg.from._serialized &&
           sentMsg.to &&
           sentMsg.to._serialized &&
           sentMsg.from._serialized === sentMsg.to._serialized
         ) {
-          await this.sendSeen(chatId);
+            await this.sendSeen(chatId);
         }
 
         return sentMsg
