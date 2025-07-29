@@ -1133,6 +1133,8 @@ class Client extends EventEmitter {
             const { messages } = await window.Store.Msg.search(query, page, count, remote);
             return messages.map(msg => window.WWebJS.getMessageModel(msg));
         }, query, options.page, options.limit, options.chatId);
+      
+        console.log({messages});
 
         return messages.map(msg => new Message(this, msg));
     }
@@ -1236,6 +1238,7 @@ class Client extends EventEmitter {
             if(msg) return window.WWebJS.getMessageModel(msg);
         }, messageId);
 
+        console.log({msg});
         if(msg) return new Message(this, msg);
         return null;
     }

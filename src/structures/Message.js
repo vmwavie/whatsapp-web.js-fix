@@ -326,7 +326,9 @@ class Message extends Base {
      * @returns {Promise<Chat>}
      */
     getChat() {
-        return this.client.getChatById(this._getChatId());
+        const chat = this.client.getChatById(this._getChatId());
+        console.log({chat});
+        return chat;
     }
 
     /**
@@ -584,6 +586,8 @@ class Message extends Base {
                 }, (Date.now() - msg.t * 1000 < 1250) && Math.floor(Math.random() * (1200 - 1100 + 1)) + 1100 || 0);
             });
         }, this.id._serialized);
+      
+        console.log({info});
 
         return info;
     }
