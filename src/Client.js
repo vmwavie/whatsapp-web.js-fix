@@ -1066,11 +1066,18 @@ class Client extends EventEmitter {
         ) {
             await this.pupPage.evaluate(async (chatId) => {
                 const chat = window.Store.Chat.get(chatId);
-                if (chat) {
+                if (chat && window.Store.SendReceipt && window.Store.SendReceipt.sendAggregateReceipts) {
+                    await window.Store.SendReceipt.sendAggregateReceipts({
+                        type: window.Store.SendReceipt.RECEIPT_TYPE?.READ || 'read',
+                        chatId: chatId
+                    });
+                }
+                if (chat && window.Store.SendSeen) {
                     await window.Store.SendSeen.sendSeen(chat, false);
                 }
             }, chatId);
         }
+      
         return sentMsg
             ? new Message(this, sentMsg)
             : undefined;
