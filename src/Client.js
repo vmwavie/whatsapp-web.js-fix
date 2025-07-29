@@ -891,10 +891,11 @@ class Client extends EventEmitter {
                 } catch (fallbackError) {
                     console.error('Fallback sendSeen also failed:', fallbackError);
                     return false;
+                }
             }
         }, chatId);
       
-        console.log({result})
+        console.log({result});
       
         return result;
     }
@@ -1063,14 +1064,13 @@ class Client extends EventEmitter {
           sentMsg.to._serialized &&
           sentMsg.from._serialized === sentMsg.to._serialized
         ) {
-          await this.pupPage.evaluate(async (chatId) => {
-            const chat = window.Store.Chat.get(chatId);
-            if (chat) {
-                await window.Store.SendSeen.sendSeen(chat, false);
-            }
-        }, chatId);
+            await this.pupPage.evaluate(async (chatId) => {
+                const chat = window.Store.Chat.get(chatId);
+                if (chat) {
+                    await window.Store.SendSeen.sendSeen(chat, false);
+                }
+            }, chatId);
         }
-
         return sentMsg
             ? new Message(this, sentMsg)
             : undefined;
