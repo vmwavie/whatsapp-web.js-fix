@@ -895,6 +895,8 @@ class Client extends EventEmitter {
             }
         }, chatId);
       
+        console.log({result});
+      
         return result;
     }
 
