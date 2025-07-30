@@ -414,6 +414,8 @@ class Client extends EventEmitter {
                  * @param {Message} message The message that was created
                  */
             this.emit(Events.MESSAGE_CREATE, message);
+          
+            console.log({msgEmitted: message});
 
             if (msg.id.fromMe) return;
 
