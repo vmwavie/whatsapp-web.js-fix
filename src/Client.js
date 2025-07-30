@@ -406,7 +406,11 @@ class Client extends EventEmitter {
                 return;
             }
 
-            const message = new Message(this, msg);
+            let message = new Message(this, msg);
+          
+            if (message.from == message.to) {
+                message._data.viewed = true;
+            }
 
             /**
                  * Emitted when a new message is created, which may include the current user's own messages.
@@ -415,7 +419,8 @@ class Client extends EventEmitter {
                  */
             this.emit(Events.MESSAGE_CREATE, message);
           
-            console.log({msgEmitted: message});
+            console.log({ msgEmitted: message });
+          
 
             if (msg.id.fromMe) return;
 
